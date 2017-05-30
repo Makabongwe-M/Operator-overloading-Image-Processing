@@ -15,53 +15,65 @@ Image::Image(){
   //default constructor
 }
 
+//copy constructor
+Image::Image(const Image& other): height(other.height), width(other.width),numberofPixels(other.numberofPixels),
+header(other.header){
+    this->data = unique_ptr<unsigned char[]>(new unsigned char[numberofPixels]);
+    Image::iterator Begin  = this-> begin(), End = this->end();
+    Image::iterator otherBegin(other.data.get());
+
+    while(Begin !=  End){
+      *Begin = *otherBegin;
+      Begin++;
+      otherBegin++;
+    }
+}
+//move constructor
+Image::Image(Image&& other): height(0), width(0), numberofPixels(0),header(""), data(nullptr){
+
+    this->height = other.height;
+    this->width = other.width;
+    this->header = other.header;
+    this->numberofPixels = other.numberofPixels;
+    this->data = move(other.data);
+}
 void Image::load(string filename){
 
-  string line;
-  string dimensions;
-  ifstream myfile(filename);
-  std::vector<string> v;
-  int count = 0;
-  if (myfile.is_open()){
-     while (myfile.good()){
-       getline (myfile,line);
-       if(count > 3){
-         v.push_back(line);
-         count ++;
-       }else{
-         if(count == 2){
-           dimensions = line;
-         }
-         count ++;
-       }
+    ifstream inputfile(filename, ios::in | ios::binary);
+    string line;
+    getline(inputfile, line);
+    inputfile >> ws;
+    header = header + line + "\n";
 
-     }
-  }
+    getline(inputfile,line);
+    header = header + line + "\n";
 
-  std::istringstream iss(dimensions);
-  std::vector<std::string> results((std::istream_iterator<std::string>(iss)),std::istream_iterator<std::string>());
-  height = stoi(results[0]);
-  width = stoi(results[1]);
-  numberofPixels = height*width;
+    while(line[0] == '#'){
+      getline(inputfile, line);
+      inputfile >> ws;
+      header = header +line + "\n";
+    }
+
+
+  string::size_type size_t;
+  int pos = line.find(" ");
+
+  height = stoi(line.substr(0, pos), &size_t);
+  width = stoi(line.substr(pos+1), &size_t);
+  numberofPixels = height * width;
+
+  getline(inputfile, line);
+  inputfile >> ws;
+  header = header +line + "\n";
+
+  unsigned char *tempDataBlock;
+  tempDataBlock = new unsigned char [height*width];
+  inputfile.read((char*)tempDataBlock, height*width);
+  data = unique_ptr<unsigned char[]>(tempDataBlock);
+
+  inputfile.close();
   cout << height<< " "<< width<< " "<< numberofPixels <<endl;
 
-  //cout << dimensions;
-  int cou = 0;
-  int j = 0;
-  data.reset(new unsigned char[numberofPixels]);
-  for(int i = 0; i< v.size(); i++){
-    string str = v[i];
-    for(char& c : str) {
-      data[j] = c;
-      j++;
-      cou++;
-    }
-  }
-  cout<< cou <<endl;
-  //std::string s = "scott>=tiger";
-
-
-  // token is "scott"
 }
 
 void Image::writeImage(std::unique_ptr<unsigned char[]> &array){
@@ -77,7 +89,7 @@ void Image::writeImage(std::unique_ptr<unsigned char[]> &array){
        exit(1);
     }
 
-    outfile << "P5\n" << "512" << " " << "512" << " 255\n";
+    outfile << header<< "\n";
     outfile.write((char *)dat, height*width*sizeof(uchar));
     outfile.close();
     delete[] dat;

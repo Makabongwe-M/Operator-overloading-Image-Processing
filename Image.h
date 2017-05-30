@@ -14,9 +14,12 @@ using namespace std;
 class Image{
   public:
       Image();
+      Image(const Image& other);
+      Image(Image&& other);
       void load(string filename);
       void save(string filename);
       void writeImage(std::unique_ptr<unsigned char[]> &array);
+      string header;
       //std::unique_ptr<unsigned char[]> getData();
 
 
@@ -50,7 +53,7 @@ class Image{
                 return !(ptr == other.ptr);
               }
 
-              unsigned char operator *() const{
+              unsigned char& operator *() const{
                  return *ptr;
               }
 
@@ -77,9 +80,14 @@ class Image{
           int count = 0;
           while(beg != end){
             //cout << (int)(*(beg));
-            int diff = (int)(*(beg)) + (int)(*(beg2));
+            int sum = (int)(*(beg)) + (int)(*(beg2));
+            if(sum < 0){
+              sum = 0;
+            }else if( sum > 255){
+              sum = 255;
+            }
             //cout << diff<<" ";
-            char result = (char)(diff);
+            char result = (char)(sum);
             //cout << result <<" ";
             tempData[count] = result;
             //cout << tempData[count];
@@ -103,6 +111,13 @@ class Image{
           while(beg !=end){
             int diff = (int)(*(beg)) - (int)(*(beg2));
             //cout << diff<<" ";
+
+            if(diff < 0){
+              diff = 0;
+            }else if( diff > 255){
+              diff = 255;
+            }
+
             char result = (char)(diff);
             //cout << result <<" ";
             tempData[count] = result;
@@ -124,6 +139,13 @@ class Image{
           int count = 0;
           while(beg!= end){
             int invert = 255 - (int)(*(beg));
+
+            if(invert < 0){
+              invert = 0;
+            }else if( invert > 255){
+              invert = 255;
+            }
+
             char result = (char)(invert);
             tempData[count] = result;
             beg++;
@@ -164,7 +186,7 @@ class Image{
           return tempData;
       }
 
-      std::unique_ptr<unsigned char[]> operator*(){
+      std::unique_ptr<unsigned char[]> operator*(int threshold){
           //iterator temp;
           std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
 
@@ -173,7 +195,7 @@ class Image{
           while(beg!= end){
             int pixel = (int)(*(beg));
 
-            if(pixel > 150){
+            if(pixel >threshold){
               pixel = 255;
             }else{
               pixel = 0;

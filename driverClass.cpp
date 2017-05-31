@@ -18,40 +18,66 @@ using std::setw;
 
 typedef unsigned char uchar;
 
-int main(){
-  /*Image object;
-  object.load("Lenna_standard.pgm");
-  !object;*/
+int main(int argc, char *argv[]){
 
-  Image object2;
-  object2.load("shrek_rectangular.pgm");
-  //!object2;
-  object2*100;
-  //object2/object;
-  //object2;
+  /*string operation = argv[1];
+  string Image1 = argv[2];
+  string Image2 = argv[3];
+  string OutputImage = argv[4];*/
 
-  //Image object3;
-  //object3.load("shrek_rectangular.pgm");
-  //object3;
-  //object.Do(object, object2);
-  /*std::unique_ptr<unsigned char[]> data;
-  std::unique_ptr<unsigned char[]> data2;
+  //cout << argc << endl;
 
-  data2 = object/object2;
-  data = object + object2;
+  //cout << operation << " "<<Image1 << " "<< Image2 << " "<< OutputImage<<endl;
 
-  cout << sizeof(data);*/
-  //for(int i; i<262144;i++){
-  //  cout << data[i];
-  //}
+  if(argc == 5){
+      string operation = argv[1];
+      string Image1 = argv[2];
+      string Image2 = argv[3];
+      string OutputImage = argv[4];
 
+      Image firstImage(Image1);
+      firstImage.OutputImage = OutputImage;
 
+      if(operation == "-a"){
+          Image secondImage(Image2);
+          firstImage.load();
+          secondImage.load();
+          firstImage + secondImage;
+        //cout << "add" <<endl;
+      }else if(operation == "-s"){
+          Image secondImage(Image2);
+          firstImage.load();
+          secondImage.load();
+          firstImage - secondImage;
 
+      }else if(operation == "-l"){
+          Image secondImage(Image2);
+          firstImage.load();
+          secondImage.load();
+          firstImage/secondImage;
+
+      }else if(operation == "-t"){
+          string thresh = argv[3];
+          int threshold = atoi(thresh.c_str());
+          firstImage.load();
+          firstImage*threshold;
+          cout << threshold <<endl;
+      }
+
+  }else if(argc == 4){
+        string operation = argv[1];
+        string Image1 = argv[2];
+        string OutputImage = argv[3];
+        Image object(Image1);
+        object.OutputImage = OutputImage;
+        object.load();
+
+        if(operation == "-i"){
+            !object;
+        }
+
+  }else{
+      cout << "Too few or too many arguments entered."<<endl;
+  }
   return 0;
 }
-
-/*std::istringstream iss(dimensions);
-std::vector<std::string> results((std::istream_iterator<std::string>(iss)),std::istream_iterator<std::string>());
-height = stoi(results[0]);
-width = stoi(results[1]);
-numberofPixels = height*width;*/

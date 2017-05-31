@@ -14,12 +14,14 @@ using namespace std;
 class Image{
   public:
       Image();
+      Image(string filename);
       Image(const Image& other);
+      ~Image();
       Image(Image&& other);
-      void load(string filename);
-      void save(string filename);
-      void writeImage(std::unique_ptr<unsigned char[]> &array);
-      string header;
+      void load();
+      //void save(string filename);
+      void save(std::unique_ptr<unsigned char[]> &array, string outputfile);
+      string header, filename, OutputImage;
       //std::unique_ptr<unsigned char[]> getData();
 
 
@@ -73,8 +75,12 @@ class Image{
       std::unique_ptr<unsigned char[]> operator+(Image& other){
           //iterator temp;
           //cout << "here";
-          std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
+          if(this->numberofPixels != other.numberofPixels){
+            cout << "Images are not the same size, cannot operate."<<endl;
+            return nullptr;
+          }else{
 
+          std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
           Image::iterator beg  = this->begin(), end = this->end();
           Image::iterator beg2  = other.begin(), end2 = other.end();
           int count = 0;
@@ -97,14 +103,20 @@ class Image{
           }
           //temp = *(this->ptr) + *(other->ptr);
           //cout << sizeof(tempData)<<" test  ";
-          writeImage(tempData);
+          save(tempData, OutputImage);
           return tempData;
+        }
       }
 
       std::unique_ptr<unsigned char[]> operator-(Image& other){
           //iterator temp;
-          std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
 
+          if(this->numberofPixels != other.numberofPixels){
+            cout << "Images are not the same size, cannot operate."<<endl;
+            return nullptr;
+          }else{
+
+          std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
           Image::iterator beg  = this->begin(), end = this->end();
           Image::iterator beg2  = other.begin(), end2 = other.end();
           int count = 0;
@@ -127,69 +139,74 @@ class Image{
             count++;
           }
           //temp = *(this->ptr) + *(other->ptr);
-          writeImage(tempData);
+          save(tempData, OutputImage);
           return tempData;
-      }
+        }
+    }
 
       std::unique_ptr<unsigned char[]> operator!(){
           //iterator temp;
-          std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
+            std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
+            Image::iterator beg  = this->begin(), end = this->end();
+            int count = 0;
+            while(beg!= end){
+              int invert = 255 - (int)(*(beg));
 
-          Image::iterator beg  = this->begin(), end = this->end();
-          int count = 0;
-          while(beg!= end){
-            int invert = 255 - (int)(*(beg));
+              if(invert < 0){
+                invert = 0;
+              }else if( invert > 255){
+                invert = 255;
+              }
 
-            if(invert < 0){
-              invert = 0;
-            }else if( invert > 255){
-              invert = 255;
+              char result = (char)(invert);
+              tempData[count] = result;
+              beg++;
+              count++;
             }
-
-            char result = (char)(invert);
-            tempData[count] = result;
-            beg++;
-            count++;
-          }
-          //temp = *(this->ptr) + *(other->ptr);
-          writeImage(tempData);
-          return tempData;
+            //temp = *(this->ptr) + *(other->ptr);
+            save(tempData, OutputImage);
+            return tempData;
       }
 
 
       std::unique_ptr<unsigned char[]> operator/(Image& other){
           //iterator temp;
-          std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
 
-          Image::iterator beg  = this->begin(), end = this->end();
-          Image::iterator beg2  = other.begin(), end2 = other.end();
-          int count = 0;
+          if(this->numberofPixels != other.numberofPixels){
+            cout << "Images are not the same size, cannot operate."<<endl;
+            return nullptr;
+          }else{
 
-          while(count < numberofPixels){
-            char result;
-            if((int)(*(beg2)) == 0){
-              result = (char)*beg2;
-            }else{
-              result = (char)*beg;
-            }
-            //cout << diff<<" ";
-            //char result = (char)(diff);
-            //cout << result <<" ";
-            tempData[count] = result;
-            //cout << tempData[count];
-            beg++;
-            beg2++;
-            count++;
-          }
-          //temp = *(this->ptr) + *(other->ptr);
-          writeImage(tempData);
-          return tempData;
+              std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
+              Image::iterator beg  = this->begin(), end = this->end();
+              Image::iterator beg2  = other.begin(), end2 = other.end();
+              int count = 0;
+
+              while(count < numberofPixels){
+                char result;
+                if((int)(*(beg2)) == 0){
+                  result = (char)*beg2;
+                }else{
+                  result = (char)*beg;
+                }
+                //cout << diff<<" ";
+                //char result = (char)(diff);
+                //cout << result <<" ";
+                tempData[count] = result;
+                //cout << tempData[count];
+                beg++;
+                beg2++;
+                count++;
+              }
+              //temp = *(this->ptr) + *(other->ptr);
+              save(tempData, OutputImage);
+              return tempData;
+        }
       }
 
       std::unique_ptr<unsigned char[]> operator*(int threshold){
           //iterator temp;
           std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
-
           Image::iterator beg  = this->begin(), end = this->end();
           int count = 0;
           while(beg!= end){
@@ -207,7 +224,7 @@ class Image{
             count++;
           }
           //temp = *(this->ptr) + *(other->ptr);
-          writeImage(tempData);
+          save(tempData, OutputImage);
           return tempData;
       }
 

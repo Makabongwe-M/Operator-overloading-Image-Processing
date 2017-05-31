@@ -12,7 +12,11 @@ using namespace std;
 typedef unsigned char uchar;
 
 Image::Image(){
-  //default constructor
+  
+}
+
+Image::Image(string file){
+  filename  = file;
 }
 
 //copy constructor
@@ -37,7 +41,12 @@ Image::Image(Image&& other): height(0), width(0), numberofPixels(0),header(""), 
     this->numberofPixels = other.numberofPixels;
     this->data = move(other.data);
 }
-void Image::load(string filename){
+
+Image::~Image(){
+
+  //delete data;
+}
+void Image::load(){
 
     ifstream inputfile(filename, ios::in | ios::binary);
     string line;
@@ -72,20 +81,20 @@ void Image::load(string filename){
   data = unique_ptr<unsigned char[]>(tempDataBlock);
 
   inputfile.close();
-  cout << height<< " "<< width<< " "<< numberofPixels <<endl;
+  //cout << height<< " "<< width<< " "<< numberofPixels <<endl;
 
 }
 
-void Image::writeImage(std::unique_ptr<unsigned char[]> &array){
+void Image::save(std::unique_ptr<unsigned char[]> &array, string outputfile){
     unsigned char *dat= new unsigned char[height*width*sizeof(uchar)];
 
     for(int i = 0; i<numberofPixels;i++){
       dat[i] = array[i];
     }
 
-    ofstream outfile ("output.pgm");
+    ofstream outfile (outputfile.c_str());
     if (!outfile.is_open()){
-       cout << "Can't open output file"  << "output.pgm" << endl;
+       cout << "Can't open output file" << endl;
        exit(1);
     }
 

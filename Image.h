@@ -19,15 +19,12 @@ class Image{
       ~Image();
       Image(Image&& other);
       void load();
-      //void save(string filename);
       void save(std::unique_ptr<unsigned char[]> &array, string outputfile);
       string header, filename, OutputImage;
-      //std::unique_ptr<unsigned char[]> getData();
 
 
       class iterator{
           friend Image;
-          //friend std::ostream& operator<< (std::ostream &out, const iterator &dt);
           private:
               unsigned char *ptr;
               // construct only via Image class (begin/end)
@@ -62,19 +59,18 @@ class Image{
 
       };
 
-      // define begin()/end() to get iterator to start and
-      // "one-past" end.
+      /*begin method points to the first char in the data array*/
       iterator begin(void){
          return iterator(data.get());
       }
-
+      /*end method points to the last char in the data array*/
       iterator end(void){
           return iterator(data.get()+(numberofPixels));
       }
 
+      /*Add two Images. The size must be the same to get a result*/
       std::unique_ptr<unsigned char[]> operator+(Image& other){
-          //iterator temp;
-          //cout << "here";
+
           if(this->numberofPixels != other.numberofPixels){
             cout << "Images are not the same size, cannot operate."<<endl;
             return nullptr;
@@ -85,31 +81,26 @@ class Image{
           Image::iterator beg2  = other.begin(), end2 = other.end();
           int count = 0;
           while(beg != end){
-            //cout << (int)(*(beg));
             int sum = (int)(*(beg)) + (int)(*(beg2));
             if(sum < 0){
               sum = 0;
             }else if( sum > 255){
               sum = 255;
             }
-            //cout << diff<<" ";
             char result = (char)(sum);
-            //cout << result <<" ";
             tempData[count] = result;
             //cout << tempData[count];
             beg++;
             beg2++;
             count++;
           }
-          //temp = *(this->ptr) + *(other->ptr);
-          //cout << sizeof(tempData)<<" test  ";
+          //save the result the given file
           save(tempData, OutputImage);
           return tempData;
         }
       }
-
+        /*subtract two Images. The size must be the same to get a result*/
       std::unique_ptr<unsigned char[]> operator-(Image& other){
-          //iterator temp;
 
           if(this->numberofPixels != other.numberofPixels){
             cout << "Images are not the same size, cannot operate."<<endl;
@@ -122,30 +113,25 @@ class Image{
           int count = 0;
           while(beg !=end){
             int diff = (int)(*(beg)) - (int)(*(beg2));
-            //cout << diff<<" ";
-
             if(diff < 0){
               diff = 0;
             }else if( diff > 255){
               diff = 255;
             }
-
             char result = (char)(diff);
-            //cout << result <<" ";
             tempData[count] = result;
-            //cout << tempData[count];
             beg++;
             beg2++;
             count++;
           }
-          //temp = *(this->ptr) + *(other->ptr);
+          //save the result the given file
           save(tempData, OutputImage);
           return tempData;
         }
     }
-
+      /*Invert the Image*/
       std::unique_ptr<unsigned char[]> operator!(){
-          //iterator temp;
+
             std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
             Image::iterator beg  = this->begin(), end = this->end();
             int count = 0;
@@ -157,31 +143,28 @@ class Image{
               }else if( invert > 255){
                 invert = 255;
               }
-
               char result = (char)(invert);
               tempData[count] = result;
               beg++;
               count++;
             }
-            //temp = *(this->ptr) + *(other->ptr);
+            //save the result the given file
             save(tempData, OutputImage);
             return tempData;
       }
 
-
+      /*Mask an image with another image. The size must be the same to get a result*/
       std::unique_ptr<unsigned char[]> operator/(Image& other){
-          //iterator temp;
 
           if(this->numberofPixels != other.numberofPixels){
             cout << "Images are not the same size, cannot operate."<<endl;
             return nullptr;
           }else{
-
               std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
               Image::iterator beg  = this->begin(), end = this->end();
               Image::iterator beg2  = other.begin(), end2 = other.end();
-              int count = 0;
 
+              int count = 0;
               while(count < numberofPixels){
                 char result;
                 if((int)(*(beg2)) == 0){
@@ -189,41 +172,35 @@ class Image{
                 }else{
                   result = (char)*beg;
                 }
-                //cout << diff<<" ";
-                //char result = (char)(diff);
-                //cout << result <<" ";
                 tempData[count] = result;
-                //cout << tempData[count];
                 beg++;
                 beg2++;
                 count++;
               }
-              //temp = *(this->ptr) + *(other->ptr);
+              //save the result the given file
               save(tempData, OutputImage);
               return tempData;
         }
       }
-
+      /*Generate the image above the given threshold*/
       std::unique_ptr<unsigned char[]> operator*(int threshold){
-          //iterator temp;
+
           std::unique_ptr<unsigned char[]> tempData(new unsigned char[numberofPixels]);
           Image::iterator beg  = this->begin(), end = this->end();
           int count = 0;
           while(beg!= end){
             int pixel = (int)(*(beg));
-
             if(pixel >threshold){
               pixel = 255;
             }else{
               pixel = 0;
             }
-
             char result = (char)(pixel);
             tempData[count] = pixel;
             beg++;
             count++;
           }
-          //temp = *(this->ptr) + *(other->ptr);
+          //save the result the given file
           save(tempData, OutputImage);
           return tempData;
       }
@@ -232,12 +209,8 @@ class Image{
          output <<*(iterator::D.ptr);
          return output;
       }*/
-
   private:
     int width, height,numberofPixels;
     std::unique_ptr<unsigned char[]> data;
-
-
-
 };
 #endif

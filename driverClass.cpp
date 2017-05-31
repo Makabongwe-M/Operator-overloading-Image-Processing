@@ -20,15 +20,6 @@ typedef unsigned char uchar;
 
 int main(int argc, char *argv[]){
 
-  /*string operation = argv[1];
-  string Image1 = argv[2];
-  string Image2 = argv[3];
-  string OutputImage = argv[4];*/
-
-  //cout << argc << endl;
-
-  //cout << operation << " "<<Image1 << " "<< Image2 << " "<< OutputImage<<endl;
-
   if(argc == 5){
       string operation = argv[1];
       string Image1 = argv[2];
@@ -43,7 +34,7 @@ int main(int argc, char *argv[]){
           firstImage.load();
           secondImage.load();
           firstImage + secondImage;
-        //cout << "add" <<endl;
+
       }else if(operation == "-s"){
           Image secondImage(Image2);
           firstImage.load();
@@ -61,7 +52,7 @@ int main(int argc, char *argv[]){
           int threshold = atoi(thresh.c_str());
           firstImage.load();
           firstImage*threshold;
-          cout << threshold <<endl;
+          
       }
 
   }else if(argc == 4){

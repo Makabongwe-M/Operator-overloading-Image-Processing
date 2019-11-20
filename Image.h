@@ -22,7 +22,6 @@ class Image{
       void save(std::unique_ptr<unsigned char[]> &array, string outputfile);
       string header, filename, outputImage;
 
-
       class iterator{
           friend Image;
           private:
@@ -55,8 +54,6 @@ class Image{
               unsigned char& operator *() const{
                  return *ptr;
               }
-
-
       };
 
       /*begin method points to the first char in the data array*/

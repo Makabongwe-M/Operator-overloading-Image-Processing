@@ -12,7 +12,7 @@ using namespace std;
 typedef unsigned char uchar;
 
 Image::Image(){
-
+    //default constructor
 }
 
 Image::Image(string file){
@@ -43,7 +43,6 @@ Image::Image(Image&& other): height(0), width(0), numberofPixels(0),header(""), 
 }
 
 Image::~Image(){
-
   //delete data;
 }
 

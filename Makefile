@@ -1,11 +1,11 @@
 CXX = g++ -std=c++11
 CFLAG = -c
 
-imageops: driverClass.o Image.o
-	$(CXX) driverClass.o Image.o -o imageops
+imageops: interface.o Image.o
+	$(CXX) interface.o Image.o -o imageops
 
-driverClass.o: driverClass.cpp
-	$(CXX) $(CFLAG) driverClass.cpp
+interface.o: interface.cpp
+	$(CXX) $(CFLAG) interface.cpp
 
 clean:
 	rm *.o imageops

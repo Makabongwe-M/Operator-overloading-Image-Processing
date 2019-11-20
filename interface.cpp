@@ -22,27 +22,27 @@ int main(int argc, char *argv[]){
 
   if(argc == 5){
       string operation = argv[1];
-      string Image1 = argv[2];
-      string Image2 = argv[3];
-      string OutputImage = argv[4];
+      string image1 = argv[2];
+      string image2 = argv[3];
+      string outputImage = argv[4];
 
-      Image firstImage(Image1);
-      firstImage.OutputImage = OutputImage;
+      Image firstImage(image1);
+      firstImage.outputImage = outputImage;
 
       if(operation == "-a"){
-          Image secondImage(Image2);
+          Image secondImage(image2);
           firstImage.load();
           secondImage.load();
           firstImage + secondImage;
 
       }else if(operation == "-s"){
-          Image secondImage(Image2);
+          Image secondImage(image2);
           firstImage.load();
           secondImage.load();
           firstImage - secondImage;
 
       }else if(operation == "-l"){
-          Image secondImage(Image2);
+          Image secondImage(image2);
           firstImage.load();
           secondImage.load();
           firstImage/secondImage;
@@ -52,15 +52,15 @@ int main(int argc, char *argv[]){
           int threshold = atoi(thresh.c_str());
           firstImage.load();
           firstImage*threshold;
-          
+
       }
 
   }else if(argc == 4){
         string operation = argv[1];
-        string Image1 = argv[2];
-        string OutputImage = argv[3];
-        Image object(Image1);
-        object.OutputImage = OutputImage;
+        string image1 = argv[2];
+        string outputImage = argv[3];
+        Image object(image1);
+        object.outputImage = outputImage;
         object.load();
 
         if(operation == "-i"){

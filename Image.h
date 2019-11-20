@@ -20,7 +20,7 @@ class Image{
       Image(Image&& other);
       void load();
       void save(std::unique_ptr<unsigned char[]> &array, string outputfile);
-      string header, filename, OutputImage;
+      string header, filename, outputImage;
 
 
       class iterator{
@@ -89,13 +89,12 @@ class Image{
             }
             char result = (char)(sum);
             tempData[count] = result;
-            //cout << tempData[count];
             beg++;
             beg2++;
             count++;
           }
           //save the result the given file
-          save(tempData, OutputImage);
+          save(tempData, outputImage);
           return tempData;
         }
       }
@@ -125,7 +124,7 @@ class Image{
             count++;
           }
           //save the result the given file
-          save(tempData, OutputImage);
+          save(tempData, outputImage);
           return tempData;
         }
     }
@@ -149,7 +148,7 @@ class Image{
               count++;
             }
             //save the result the given file
-            save(tempData, OutputImage);
+            save(tempData, outputImage);
             return tempData;
       }
 
@@ -178,7 +177,7 @@ class Image{
                 count++;
               }
               //save the result the given file
-              save(tempData, OutputImage);
+              save(tempData, outputImage);
               return tempData;
         }
       }
@@ -201,14 +200,9 @@ class Image{
             count++;
           }
           //save the result the given file
-          save(tempData, OutputImage);
+          save(tempData, outputImage);
           return tempData;
       }
-
-      /*friend ostream &operator<<(ostream &output, const Image &D){
-         output <<*(iterator::D.ptr);
-         return output;
-      }*/
   private:
     int width, height,numberofPixels;
     std::unique_ptr<unsigned char[]> data;

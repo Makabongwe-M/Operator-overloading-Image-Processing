@@ -9,10 +9,12 @@ example:
 
 threshold operates on one Image.
 threshold is an integer
+
 example:
     executable -t shrek_rectangular.pgm 150 threshold.pgm
 
 invert operation only works on 3 arguments.
+
 example:
 executable -i Lenna_standard.pgm invert.pgm
 
